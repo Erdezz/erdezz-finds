@@ -106,14 +106,11 @@ body.em .iov{opacity:1;pointer-events:all}
 .iov input{background:var(--s1);border:1px solid var(--gold);color:var(--text);font-family:'DM Mono',monospace;font-size:.58rem;padding:8px 10px;width:86%;outline:none;text-align:center;border-radius:0}
 .iov input::placeholder{color:var(--dim)}
 .iov button{background:var(--gold);border:none;color:#000;font-family:'DM Mono',monospace;font-size:.55rem;padding:8px 18px;cursor:pointer}
-.lrow{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);gap:5px;align-items:center}
-body.em .lrow{display:flex}
-.linp{background:var(--s2);border:1px solid var(--dim2);color:var(--text);font-family:'DM Mono',monospace;font-size:.54rem;padding:7px 8px;outline:none;flex:1;transition:border-color .18s;border-radius:0}
-.linp:focus{border-color:var(--gold)}
-.linp::placeholder{color:var(--dim2)}
-.lsv{background:var(--gold);border:none;color:#000;font-family:'DM Mono',monospace;font-size:.54rem;padding:7px 10px;cursor:pointer;flex-shrink:0}
-.del-btn{position:absolute;top:6px;right:6px;z-index:10;background:rgba(160,30,30,.92);border:none;color:#fff;font-family:'DM Mono',monospace;font-size:.5rem;padding:5px 8px;cursor:pointer;display:none}
-body.em .del-btn{display:block}
+/* Boutons edit mode sur la carte */
+.card-btns{position:absolute;top:6px;right:6px;z-index:10;display:none;gap:4px;flex-direction:column}
+body.em .card-btns{display:flex}
+.del-btn{background:rgba(160,30,30,.92);border:none;color:#fff;font-family:'DM Mono',monospace;font-size:.5rem;padding:5px 8px;cursor:pointer}
+.edit-btn{background:rgba(200,169,110,.92);border:none;color:#000;font-family:'DM Mono',monospace;font-size:.5rem;padding:5px 8px;cursor:pointer}
 .add-fab{position:fixed;bottom:20px;right:16px;z-index:400;background:var(--gold);color:#000;border:none;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.2em;padding:13px 20px;cursor:pointer;box-shadow:0 8px 32px rgba(200,169,110,.4);display:none;align-items:center;gap:7px;transition:transform .18s}
 body.em .add-fab{display:flex}
 mark{background:none;color:var(--gold)}
@@ -273,6 +270,22 @@ footer{border-top:1px solid var(--border);padding:20px 16px;display:flex;align-i
   </div>
 </div>
 
+<!-- EDIT ITEM -->
+<div class="modal-bg" id="editBg">
+  <div class="modal">
+    <button class="mclose" id="editClose">✕</button>
+    <h2>Modifier Article</h2>
+    <div class="mfield"><label>Nom de l'article</label><input type="text" id="eName" placeholder="ex: Cargo Pants Wide Leg"></div>
+    <div class="mfield"><label>Marque / Description</label><input type="text" id="eBrand" placeholder="ex: Hacoo"></div>
+    <div class="mfield"><label>Source</label><select id="eCat"><option value="hacoo">Hacoo</option><option value="shein">Shein</option></select></div>
+    <div class="mfield"><label>Prix (USD)</label><input type="number" id="ePrice" placeholder="ex: 25" min="0" step="0.01" inputmode="decimal"></div>
+    <div class="mfield"><label>URL Image</label><input type="text" id="eImg" placeholder="https://..." inputmode="url"></div>
+    <img class="mprev" id="ePrev" alt="preview">
+    <div class="mfield"><label>Lien Shop (optionnel)</label><input type="text" id="eLink" placeholder="https://..." inputmode="url"></div>
+    <div class="mrow"><button class="mcancel" id="editCancel">Annuler</button><button class="msubmit" id="editSubmit">SAUVEGARDER →</button></div>
+  </div>
+</div>
+
 <!-- SOCIAL -->
 <div class="modal-bg" id="socialBg">
   <div class="modal">
@@ -294,7 +307,7 @@ footer{border-top:1px solid var(--border);padding:20px 16px;display:flex;align-i
 // ══ CONFIG — CHANGE ICI ══
 var SUPABASE_URL = 'https://cwldhsurcnksjhwyalob.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3bGRoc3VyY25rc2pod3lhbG9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MTg0OTMsImV4cCI6MjA5MjI5NDQ5M30.03rJzGHNJbZHDNfZNjLXbP0NDu71OhfvleFagLRFpWk';
-var SECRET_PIN   = '052511'; // ← change ton PIN ici
+var SECRET_PIN   = '052511';
 var PIN_LEN=6, MAX_TRIES=5;
 
 var CATS={hacoo:'Hacoo',shein:'Shein'};
@@ -309,6 +322,7 @@ var THEMES={
 };
 var ITEMS=[],flt='all',srch='',srt='def',em=false;
 var pinBuf='',pinTries=0,pinLocked=false,pinTaps=0,lastTap=0;
+var editingId=null;
 
 function toast(msg){
   var t=document.getElementById('toast');
@@ -406,6 +420,54 @@ document.getElementById('logoBtn').addEventListener('click',function(){var now=D
 function enterEdit(){em=true;window.__editing=true;document.body.classList.add('em');render();}
 function exitEdit(){em=false;window.__editing=false;document.body.classList.remove('em');render();}
 
+// ══ EDIT ITEM MODAL ══
+function openEditModal(id){
+  var it=ITEMS.find(function(x){return x.id===id;});
+  if(!it)return;
+  editingId=id;
+  document.getElementById('eName').value=it.name||'';
+  document.getElementById('eBrand').value=it.brand||'';
+  document.getElementById('eCat').value=it.cat||'hacoo';
+  document.getElementById('ePrice').value=it.price||'';
+  document.getElementById('eImg').value=it.img||'';
+  document.getElementById('eLink').value=it.link||'';
+  var p=document.getElementById('ePrev');
+  if(it.img){p.src=it.img;p.style.display='block';}else{p.style.display='none';p.src='';}
+  document.getElementById('editSubmit').disabled=false;
+  document.getElementById('editSubmit').textContent='SAUVEGARDER →';
+  document.getElementById('editBg').classList.add('open');
+  setTimeout(function(){document.getElementById('eName').focus();},80);
+}
+function closeEditModal(){
+  document.getElementById('editBg').classList.remove('open');
+  editingId=null;
+  document.getElementById('editSubmit').disabled=false;
+  document.getElementById('editSubmit').textContent='SAUVEGARDER →';
+}
+document.getElementById('editClose').addEventListener('click',closeEditModal);
+document.getElementById('editCancel').addEventListener('click',closeEditModal);
+document.getElementById('editBg').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
+document.getElementById('eImg').addEventListener('input',function(){
+  var p=document.getElementById('ePrev'),u=this.value.trim();
+  if(u){p.src=u;p.style.display='block';}else{p.style.display='none';p.src='';}
+});
+document.getElementById('editSubmit').addEventListener('click',function(){
+  if(!editingId)return;
+  var name=document.getElementById('eName').value.trim();
+  var brand=document.getElementById('eBrand').value.trim();
+  var cat=document.getElementById('eCat').value;
+  var price=parseFloat(document.getElementById('ePrice').value)||0;
+  var img=document.getElementById('eImg').value.trim();
+  var link=document.getElementById('eLink').value.trim();
+  if(!name){document.getElementById('eName').focus();return;}
+  if(!brand){document.getElementById('eBrand').focus();return;}
+  if(link&&!link.startsWith('http'))link='https://'+link;
+  this.disabled=true;this.textContent='EN COURS...';
+  updateItem(editingId,{name:name,brand:brand,cat:cat,price:price,img:img,link:link})
+    .then(function(){closeEditModal();})
+    .catch(function(){toast('Erreur — réessaie');document.getElementById('editSubmit').disabled=false;document.getElementById('editSubmit').textContent='SAUVEGARDER →';});
+});
+
 function getSocial(){try{return JSON.parse(localStorage.getItem('ldf_social')||'{}');}catch(e){return {};}}
 function setSocial(o){try{localStorage.setItem('ldf_social',JSON.stringify(o));}catch(e){}}
 function openSocialModal(){var s=getSocial();document.getElementById('sDiscord').value=s.discord||'';document.getElementById('sTelegram').value=s.telegram||'';document.getElementById('socialBg').classList.add('open');}
@@ -460,9 +522,8 @@ function imgHtml(it){
   if(!it.img||!it.img.trim())return ph;
   return '<img src="'+escA(it.img)+'" alt="'+escA(it.name)+'" loading="lazy" onload="this.classList.remove(\'loading\')" onerror="this.style.display=\'none\'" class="loading">'+ph;
 }
-function saveLink(inp){var id=parseInt(inp.dataset.id);var v=inp.value.trim();if(v&&!v.startsWith('http'))v='https://'+v;updateItem(id,{link:v});}
-function saveImg(inp){var id=parseInt(inp.dataset.id);updateItem(id,{img:inp.value.trim()});}
 function del(id){deleteItem(parseInt(id));}
+function edit(id){openEditModal(parseInt(id));}
 
 function getData(){
   var list=ITEMS.slice();
@@ -493,13 +554,16 @@ function render(){
       n++;var linked=!!(it.link&&it.link.trim());var id=it.id;
       var fn=linked?'if(!window.__editing)window.open(\''+escA(it.link)+'\',\'_blank\')':'';
       html+='<div class="card'+(linked?'':' no-link')+'" onclick="'+fn+'">';
-      if(em)html+='<button class="del-btn" onclick="event.stopPropagation();del('+id+')">✕ SUPPR</button>';
-      html+='<div class="ci">'+imgHtml(it);
-      if(em)html+='<div class="iov" onclick="event.stopPropagation()"><label>📸 URL Photo</label><input type="text" placeholder="https://..." value="'+escA(it.img)+'" data-id="'+id+'" onkeydown="if(event.key===\'Enter\')saveImg(this)"><button onclick="saveImg(this.previousElementSibling)">✓ OK</button></div>';
-      html+='</div><div class="cb"><div class="ct"><div class="cbrand">'+hl(escA(it.brand))+'</div><div class="cnum">#'+String(n).padStart(2,'0')+'</div></div>';
+      if(em){
+        html+='<div class="card-btns">';
+        html+='<button class="edit-btn" onclick="event.stopPropagation();edit('+id+')">✏ MODIFIER</button>';
+        html+='<button class="del-btn" onclick="event.stopPropagation();del('+id+')">✕ SUPPR</button>';
+        html+='</div>';
+      }
+      html+='<div class="ci">'+imgHtml(it)+'</div>';
+      html+='<div class="cb"><div class="ct"><div class="cbrand">'+hl(escA(it.brand))+'</div><div class="cnum">#'+String(n).padStart(2,'0')+'</div></div>';
       html+='<div class="cname">'+hl(escA(it.name))+'</div>';
       html+='<div class="cf"><div class="price"><sub>USD</sub>$'+Number(it.price).toFixed(0)+'</div><div class="tag'+(linked?'':' na')+'">'+(linked?'SHOP →':'NO LINK')+'</div></div>';
-      if(em)html+='<div class="lrow" onclick="event.stopPropagation()"><input class="linp" type="text" placeholder="Colle ton lien..." value="'+escA(it.link||'')+'" data-id="'+id+'" onkeydown="if(event.key===\'Enter\')saveLink(this)"><button class="lsv" onclick="saveLink(this.previousElementSibling)">✓</button></div>';
       html+='</div></div>';
     });
     html+='</div>';
