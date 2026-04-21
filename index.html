@@ -16,6 +16,8 @@
   --text:#f0ece4;--text-dim:#6b6560;--text-mid:#a09890;
   --discord:#5865F2;--telegram:#26A5E4;
   --font-display:'Syne',sans-serif;--font-serif:'Instrument Serif',serif;--font-mono:'Space Mono',monospace;
+  --femme:#e878a0;--femme-dim:#a04468;--femme-glow:rgba(232,120,160,.12);
+  --homme:#4e9af1;--homme-dim:#2a66b5;--homme-glow:rgba(78,154,241,.12);
 }
 body.t-purple{--gold:#b88fff;--gold-dim:#7b52cc;--gold-glow:rgba(184,143,255,.12);--bg:#060410;--s1:#0c0920;--s2:#100e28;--s3:#141130;--border:rgba(184,143,255,.08);--border-gold:rgba(184,143,255,.3);}
 body.t-rose{--gold:#ff6b9d;--gold-dim:#c04470;--gold-glow:rgba(255,107,157,.12);--bg:#07030a;--s1:#0f0718;--s2:#160c20;--s3:#1c1128;--border:rgba(255,107,157,.08);--border-gold:rgba(255,107,157,.3);}
@@ -27,6 +29,12 @@ html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:var(--font-mono);font-size:14px;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
 body::before{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.35;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.06'/%3E%3C/svg%3E");mix-blend-mode:overlay;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--gold-dim);}
+
+/* ══ GENDER BADGE ══ */
+.gender-tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:8px;letter-spacing:.25em;text-transform:uppercase;padding:3px 8px;position:absolute;top:10px;right:10px;z-index:5;backdrop-filter:blur(6px);}
+.gender-tag.femme{background:rgba(232,120,160,.15);border:1px solid rgba(232,120,160,.4);color:var(--femme);}
+.gender-tag.homme{background:rgba(78,154,241,.15);border:1px solid rgba(78,154,241,.4);color:var(--homme);}
+.gender-tag.mixte{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);color:var(--gold);}
 
 /* ══ PROMO BANNER ══ */
 .promo-banner{background:linear-gradient(90deg,#120d00,#1e1500,#120d00);border-bottom:1px solid var(--border-gold);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;}
@@ -78,7 +86,6 @@ body.t-light header{background:rgba(244,239,230,.92);}
 .opt-sub{font-size:9px;color:var(--text-dim);margin-top:1px;}
 .item-count{background:var(--gold);color:#000;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.12em;padding:0 12px;height:36px;display:flex;align-items:center;white-space:nowrap;}
 
-/* MOD badge button */
 .mod-badge-btn{display:none;height:36px;padding:0 12px;border:1px solid rgba(255,80,80,.35);background:rgba(180,30,30,.2);color:#ff7070;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.15em;cursor:pointer;align-items:center;gap:6px;transition:all .18s;animation:modBorderPulse 2s infinite;}
 @keyframes modBorderPulse{0%,100%{border-color:rgba(255,80,80,.15)}50%{border-color:rgba(255,80,80,.7)}}
 .mod-badge-btn:hover{background:rgba(200,40,40,.5);color:#fff;border-color:#ff5555;}
@@ -93,9 +100,11 @@ body.em .mod-badge-btn{display:flex;}
 .hero h1{font-family:var(--font-serif);font-size:clamp(2.4rem,7vw,5.2rem);font-weight:400;line-height:1.0;letter-spacing:-.01em;color:var(--text);margin-bottom:16px;}
 .hero h1 em{font-style:italic;color:var(--gold);}
 .hero-desc{color:var(--text-dim);font-size:11px;letter-spacing:.18em;line-height:2;max-width:440px;}
-.hero-stats{display:flex;gap:32px;margin-top:32px;}
+.hero-stats{display:flex;gap:32px;margin-top:32px;flex-wrap:wrap;}
 .stat{display:flex;flex-direction:column;gap:3px;}
 .stat-num{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--gold);line-height:1;}
+.stat-num.femme-col{color:var(--femme);}
+.stat-num.homme-col{color:var(--homme);}
 .stat-label{font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--text-dim);}
 .wm{position:absolute;right:-10px;bottom:-30px;font-family:var(--font-display);font-size:min(25vw,260px);font-weight:800;color:rgba(212,168,67,.025);pointer-events:none;user-select:none;line-height:1;letter-spacing:-.04em;}
 
@@ -107,13 +116,19 @@ body.t-light .ctrl{background:rgba(244,239,230,.94);}
 .search-input{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:12px;padding:11px 13px 11px 38px;outline:none;border-radius:0;-webkit-appearance:none;transition:border-color .2s;}
 .search-input::placeholder{color:var(--text-dim);}
 .search-input:focus{border-color:var(--gold);}
-.filter-row{display:flex;gap:6px;align-items:center;}
-.filter-btn{flex:1;background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:9px 6px;cursor:pointer;transition:all .18s;text-align:center;border-radius:0;}
+.filter-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.filter-btn{flex:1;min-width:0;background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:9px 4px;cursor:pointer;transition:all .18s;text-align:center;border-radius:0;}
 .filter-btn:hover{border-color:var(--border-gold);color:var(--gold);}
 .filter-btn.on{background:var(--gold);color:#000;border-color:var(--gold);}
+.filter-btn.on.femme-btn{background:var(--femme);border-color:var(--femme);color:#fff;}
+.filter-btn.on.homme-btn{background:var(--homme);border-color:var(--homme);color:#fff;}
+.filter-btn.femme-btn:not(.on):hover{border-color:var(--femme);color:var(--femme);}
+.filter-btn.homme-btn:not(.on):hover{border-color:var(--homme);color:var(--homme);}
+.filter-sep{width:1px;height:28px;background:var(--border);flex-shrink:0;}
 .sort-sel{background:var(--s2);border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-mono);font-size:10px;padding:9px 12px;outline:none;cursor:pointer;-webkit-appearance:none;border-radius:0;flex-shrink:0;transition:border-color .18s;}
 .sort-sel:focus{border-color:var(--gold);}
 .sort-sel option{background:var(--s2);}
+.filter-label{font-family:var(--font-mono);font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;flex-shrink:0;padding:0 2px;}
 
 /* ══ MAIN ══ */
 main{padding:0 20px 120px;}
@@ -123,6 +138,21 @@ main{padding:0 20px 120px;}
 .section-name{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--text);}
 .section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border-gold),transparent);}
 .section-count{font-family:var(--font-mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);}
+/* Gender sub-section */
+.gender-head{display:flex;align-items:center;gap:10px;padding:18px 0 12px;margin-left:46px;}
+.gender-head-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.gender-head-dot.femme{background:var(--femme);}
+.gender-head-dot.homme{background:var(--homme);}
+.gender-head-dot.mixte{background:var(--gold);}
+.gender-head-name{font-family:var(--font-mono);font-size:9px;letter-spacing:.4em;text-transform:uppercase;}
+.gender-head-name.femme{color:var(--femme);}
+.gender-head-name.homme{color:var(--homme);}
+.gender-head-name.mixte{color:var(--gold);}
+.gender-head-line{flex:1;height:1px;}
+.gender-head-line.femme{background:linear-gradient(90deg,rgba(232,120,160,.3),transparent);}
+.gender-head-line.homme{background:linear-gradient(90deg,rgba(78,154,241,.3),transparent);}
+.gender-head-line.mixte{background:linear-gradient(90deg,rgba(212,168,67,.3),transparent);}
+.gender-head-cnt{font-family:var(--font-mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);}
 
 /* ══ GRID & CARDS ══ */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
@@ -135,14 +165,14 @@ main{padding:0 20px 120px;}
 .card:hover{border-color:var(--border-gold);transform:translateY(-2px);}
 .card:hover::after{opacity:1;}
 .card:active{transform:scale(.98);}
+.card.is-femme:hover{border-color:rgba(232,120,160,.4);}
+.card.is-homme:hover{border-color:rgba(78,154,241,.4);}
 
 /* ── IMAGE SYSTEM ── */
 .card-img{width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--s3);position:relative;}
-/* Placeholder always behind */
 .img-ph{position:absolute;inset:0;z-index:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--s3),var(--s1));}
 .img-ph-icon{font-size:2.2rem;opacity:.18;}
 .img-ph-brand{font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--text-dim);opacity:.4;}
-/* Real image on top, starts hidden */
 .card-img img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:transform .5s,opacity .4s;}
 .card-img img.img-ok{opacity:1;}
 .card:hover .card-img img.img-ok{transform:scale(1.08);}
@@ -166,6 +196,16 @@ body.em .card-actions{display:flex;}
 .act-del{background:rgba(180,40,40,.9);color:#fff;}
 .act-btn:hover{opacity:.8;}
 
+/* ══ GENDER RADIO (in modals) ══ */
+.gender-radio-wrap{display:flex;gap:8px;margin-top:2px;}
+.gender-radio-opt{flex:1;position:relative;}
+.gender-radio-opt input{position:absolute;opacity:0;width:0;height:0;}
+.gender-radio-lbl{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 6px;border:1px solid var(--border);cursor:pointer;font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);transition:all .16s;user-select:none;}
+.gender-radio-opt input:checked + .gender-radio-lbl.femme-lbl{border-color:var(--femme);background:rgba(232,120,160,.12);color:var(--femme);}
+.gender-radio-opt input:checked + .gender-radio-lbl.homme-lbl{border-color:var(--homme);background:rgba(78,154,241,.12);color:var(--homme);}
+.gender-radio-opt input:checked + .gender-radio-lbl.mixte-lbl{border-color:var(--gold);background:rgba(212,168,67,.1);color:var(--gold);}
+.gender-radio-lbl:hover{border-color:var(--text-mid);color:var(--text);}
+
 /* ══ MODERATOR PANEL ══ */
 .mod-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:800;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
 @media(min-width:600px){.mod-overlay{align-items:center;}}
@@ -181,12 +221,12 @@ body.em .card-actions{display:flex;}
 .mod-sections{display:flex;flex-direction:column;gap:16px;}
 .mod-section{background:var(--s2);border:1px solid var(--border);padding:16px;}
 .mod-sec-title{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-/* Stats row */
 .mod-stats{display:flex;gap:10px;flex-wrap:wrap;}
-.mod-stat{flex:1;min-width:70px;background:var(--s3);padding:12px;text-align:center;}
-.mod-stat-n{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--gold);}
+.mod-stat{flex:1;min-width:60px;background:var(--s3);padding:12px;text-align:center;}
+.mod-stat-n{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--gold);}
+.mod-stat-n.femme-col{color:var(--femme);}
+.mod-stat-n.homme-col{color:var(--homme);}
 .mod-stat-l{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);margin-top:2px;}
-/* Actions grid */
 .mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .mod-btn{padding:12px 10px;border:1px solid var(--border);background:var(--s3);color:var(--text-mid);font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;}
 .mod-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--s2);}
@@ -194,7 +234,6 @@ body.em .card-actions{display:flex;}
 .mod-btn.danger:hover{border-color:#ff5555;color:#ff5555;background:rgba(180,40,40,.1);}
 .mod-btn.prim{border-color:var(--border-gold);color:var(--gold);background:rgba(212,168,67,.06);}
 .mod-btn.prim:hover{background:var(--gold);color:#000;}
-/* Social links */
 .mod-social{display:flex;flex-direction:column;gap:8px;}
 .mod-social-row{display:flex;align-items:center;gap:8px;}
 .mod-social-lbl{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dim);width:68px;flex-shrink:0;}
@@ -202,14 +241,11 @@ body.em .card-actions{display:flex;}
 .mod-social-inp:focus{border-color:var(--gold);}
 .mod-save-btn{background:var(--gold);border:none;color:#000;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:opacity .18s;}
 .mod-save-btn:hover{opacity:.8;}
-/* Promo display */
 .mod-promos{display:flex;gap:10px;}
 .mod-promo-box{flex:1;background:var(--s3);border:1px dashed var(--border-gold);padding:12px;text-align:center;}
 .mod-promo-code{font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--gold);letter-spacing:.1em;}
 .mod-promo-desc{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
-/* Img diag */
 .mod-diag{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);line-height:1.9;max-height:180px;overflow-y:auto;}
-/* Exit */
 .mod-exit{width:100%;padding:14px;background:rgba(180,30,30,.18);border:1px solid rgba(255,60,60,.3);color:#ff7777;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.2em;cursor:pointer;transition:all .18s;margin-top:4px;}
 .mod-exit:hover{background:rgba(200,40,40,.4);color:#fff;}
 
@@ -250,8 +286,6 @@ body.em .add-fab{display:flex;animation:fabIn .3s both;}
 .field input:focus,.field select:focus{border-color:var(--gold);}
 .field input::placeholder{color:var(--text-dim);}
 .field select option{background:var(--s2);}
-
-/* Improved image preview */
 .img-preview-wrap{display:none;margin-bottom:14px;position:relative;border:1px solid var(--border);background:var(--s3);aspect-ratio:4/3;overflow:hidden;}
 .img-preview-wrap.visible{display:block;}
 .img-preview-wrap img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s;}
@@ -260,7 +294,6 @@ body.em .add-fab{display:flex;animation:fabIn .3s both;}
 .img-status-bar.loading{background:rgba(212,168,67,.85);color:#000;}
 .img-status-bar.ok{background:rgba(0,180,70,.85);color:#fff;}
 .img-status-bar.fail{background:rgba(180,30,30,.85);color:#fff;}
-
 .modal-row{display:flex;gap:8px;margin-top:8px;}
 .modal-submit{flex:1;background:var(--gold);border:none;color:#000;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.2em;padding:15px;cursor:pointer;transition:opacity .18s;}
 .modal-submit:hover{opacity:.85;}
@@ -376,8 +409,9 @@ mark{background:none;color:var(--gold);}
   <p class="hero-desc">Hacoo & Shein — sélectionnés & testés<br>par Erdezz. Mis à jour régulièrement.</p>
   <div class="hero-stats">
     <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Articles</div></div>
+    <div class="stat"><div class="stat-num femme-col" id="statFemme">0</div><div class="stat-label">Femme</div></div>
+    <div class="stat"><div class="stat-num homme-col" id="statHomme">0</div><div class="stat-label">Homme</div></div>
     <div class="stat"><div class="stat-num">2</div><div class="stat-label">Sources</div></div>
-    <div class="stat"><div class="stat-num">USD</div><div class="stat-label">Devise</div></div>
   </div>
   <div class="wm">FINDS</div>
   <div class="hero-line"></div>
@@ -390,9 +424,14 @@ mark{background:none;color:var(--gold);}
     <input type="text" class="search-input" id="srch" placeholder="Rechercher un article..." autocomplete="off">
   </div>
   <div class="filter-row">
+    <span class="filter-label">Source</span>
     <button class="filter-btn on" data-c="all">Tout</button>
     <button class="filter-btn" data-c="hacoo">Hacoo</button>
     <button class="filter-btn" data-c="shein">Shein</button>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Genre</span>
+    <button class="filter-btn femme-btn" data-g="femme">♀ Femme</button>
+    <button class="filter-btn homme-btn" data-g="homme">♂ Homme</button>
     <select class="sort-sel" id="srt">
       <option value="def">Défaut</option>
       <option value="pa">Prix ↑</option>
@@ -434,11 +473,28 @@ mark{background:none;color:var(--gold);}
     <h2>Nouvel Article</h2>
     <div class="field"><label>Nom</label><input type="text" id="mName" placeholder="ex: Cargo Pants Wide Leg"></div>
     <div class="field"><label>Marque / Description</label><input type="text" id="mBrand" placeholder="ex: Hacoo Exclusive"></div>
+    <div class="field">
+      <label>Genre</label>
+      <div class="gender-radio-wrap">
+        <div class="gender-radio-opt">
+          <input type="radio" name="mGender" id="mGenderF" value="femme">
+          <label class="gender-radio-lbl femme-lbl" for="mGenderF">♀ Femme</label>
+        </div>
+        <div class="gender-radio-opt">
+          <input type="radio" name="mGender" id="mGenderH" value="homme">
+          <label class="gender-radio-lbl homme-lbl" for="mGenderH">♂ Homme</label>
+        </div>
+        <div class="gender-radio-opt">
+          <input type="radio" name="mGender" id="mGenderM" value="mixte" checked>
+          <label class="gender-radio-lbl mixte-lbl" for="mGenderM">✦ Mixte</label>
+        </div>
+      </div>
+    </div>
     <div class="field"><label>Source</label><select id="mCat"><option value="hacoo">Hacoo</option><option value="shein">Shein</option></select></div>
     <div class="field"><label>Prix (USD)</label><input type="number" id="mPrice" placeholder="25" min="0" step="0.01" inputmode="decimal"></div>
     <div class="field">
       <label>URL Image (lien direct vers l'image)</label>
-      <input type="text" id="mImg" placeholder="https://i.imgur.com/... ou https://..." inputmode="url" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input type="text" id="mImg" placeholder="https://i.imgur.com/..." inputmode="url" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
     <div class="img-preview-wrap" id="mPrevWrap">
       <img id="mPrev" alt="aperçu">
@@ -459,11 +515,28 @@ mark{background:none;color:var(--gold);}
     <h2>Modifier Article</h2>
     <div class="field"><label>Nom</label><input type="text" id="eName" placeholder="ex: Cargo Pants Wide Leg"></div>
     <div class="field"><label>Marque / Description</label><input type="text" id="eBrand" placeholder="ex: Hacoo Exclusive"></div>
+    <div class="field">
+      <label>Genre</label>
+      <div class="gender-radio-wrap">
+        <div class="gender-radio-opt">
+          <input type="radio" name="eGender" id="eGenderF" value="femme">
+          <label class="gender-radio-lbl femme-lbl" for="eGenderF">♀ Femme</label>
+        </div>
+        <div class="gender-radio-opt">
+          <input type="radio" name="eGender" id="eGenderH" value="homme">
+          <label class="gender-radio-lbl homme-lbl" for="eGenderH">♂ Homme</label>
+        </div>
+        <div class="gender-radio-opt">
+          <input type="radio" name="eGender" id="eGenderM" value="mixte">
+          <label class="gender-radio-lbl mixte-lbl" for="eGenderM">✦ Mixte</label>
+        </div>
+      </div>
+    </div>
     <div class="field"><label>Source</label><select id="eCat"><option value="hacoo">Hacoo</option><option value="shein">Shein</option></select></div>
     <div class="field"><label>Prix (USD)</label><input type="number" id="ePrice" placeholder="25" min="0" step="0.01" inputmode="decimal"></div>
     <div class="field">
       <label>URL Image (lien direct vers l'image)</label>
-      <input type="text" id="eImg" placeholder="https://i.imgur.com/... ou https://..." inputmode="url" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input type="text" id="eImg" placeholder="https://i.imgur.com/..." inputmode="url" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
     <div class="img-preview-wrap" id="ePrevWrap">
       <img id="ePrev" alt="aperçu">
@@ -486,19 +559,17 @@ mark{background:none;color:var(--gold);}
       <div class="mod-subtitle">Erdezz Finds · Mode modérateur actif</div>
     </div>
     <div class="mod-sections">
-
-      <!-- Stats -->
       <div class="mod-section">
         <div class="mod-sec-title">📊 Statistiques</div>
         <div class="mod-stats">
           <div class="mod-stat"><div class="mod-stat-n" id="mst0">0</div><div class="mod-stat-l">Total</div></div>
           <div class="mod-stat"><div class="mod-stat-n" id="mst1">0</div><div class="mod-stat-l">Hacoo</div></div>
           <div class="mod-stat"><div class="mod-stat-n" id="mst2">0</div><div class="mod-stat-l">Shein</div></div>
+          <div class="mod-stat"><div class="mod-stat-n femme-col" id="mst4">0</div><div class="mod-stat-l">Femme</div></div>
+          <div class="mod-stat"><div class="mod-stat-n homme-col" id="mst5">0</div><div class="mod-stat-l">Homme</div></div>
           <div class="mod-stat"><div class="mod-stat-n" id="mst3">0</div><div class="mod-stat-l">Avec lien</div></div>
         </div>
       </div>
-
-      <!-- Actions -->
       <div class="mod-section">
         <div class="mod-sec-title">⚡ Actions Rapides</div>
         <div class="mod-grid">
@@ -508,14 +579,10 @@ mark{background:none;color:var(--gold);}
           <button class="mod-btn danger" id="modCheckImgBtn">🖼 Vérifier images</button>
         </div>
       </div>
-
-      <!-- Image diag (hidden until checked) -->
       <div class="mod-section" id="modDiagSec" style="display:none">
         <div class="mod-sec-title">🖼 Résultats Images</div>
         <div class="mod-diag" id="modDiagContent"></div>
       </div>
-
-      <!-- Social links -->
       <div class="mod-section">
         <div class="mod-sec-title">🔗 Liens Sociaux</div>
         <div class="mod-social">
@@ -530,23 +597,13 @@ mark{background:none;color:var(--gold);}
           </div>
         </div>
       </div>
-
-      <!-- Promos -->
       <div class="mod-section">
         <div class="mod-sec-title">🏷 Codes Promo Actifs</div>
         <div class="mod-promos">
-          <div class="mod-promo-box">
-            <div class="mod-promo-code">TU87V</div>
-            <div class="mod-promo-desc">Shein · -60%</div>
-          </div>
-          <div class="mod-promo-box">
-            <div class="mod-promo-code">Erdezz14</div>
-            <div class="mod-promo-desc">Hacoo · -15%</div>
-          </div>
+          <div class="mod-promo-box"><div class="mod-promo-code">TU87V</div><div class="mod-promo-desc">Shein · -60%</div></div>
+          <div class="mod-promo-box"><div class="mod-promo-code">Erdezz14</div><div class="mod-promo-desc">Hacoo · -15%</div></div>
         </div>
       </div>
-
-      <!-- Exit -->
       <button class="mod-exit" id="modExitBtn">✕ QUITTER LE MODE MODÉRATEUR</button>
     </div>
   </div>
@@ -560,13 +617,14 @@ mark{background:none;color:var(--gold);}
 </footer>
 
 <script>
-/* ══ CONFIG ══ */
 var SB_URL='https://cwldhsurcnksjhwyalob.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3bGRoc3VyY25rc2pod3lhbG9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MTg0OTMsImV4cCI6MjA5MjI5NDQ5M30.03rJzGHNJbZHDNfZNjLXbP0NDu71OhfvleFagLRFpWk';
 var SECRET_PIN='052511';
 var PIN_LEN=6,MAX_TRIES=5;
 var CATS={hacoo:'Hacoo',shein:'Shein'};
 var ICONS={hacoo:'🛍️',shein:'👗'};
+var GENDER_ICONS={femme:'♀',homme:'♂',mixte:'✦'};
+var GENDER_LABELS={femme:'Femme',homme:'Homme',mixte:'Mixte'};
 var THEMES={
   noir:{cls:'',d:['#d4a843','#b88fff','#ff6b9d']},
   purple:{cls:'t-purple',d:['#b88fff','#d4a843','#ff6b9d']},
@@ -576,11 +634,10 @@ var THEMES={
   light:{cls:'t-light',d:['#7a4f1e','#5a8a2e','#1e5a8a']}
 };
 
-var ITEMS=[],flt='all',srch='',srt='def',em=false;
+var ITEMS=[],flt='all',gflt='all',srch='',srt='def',em=false;
 var pinBuf='',pinTries=0,pinLocked=false,pinTaps=0,lastTap=0;
 var editingId=null;
 
-/* ══ PROMO COPY ══ */
 function copyCode(code){
   var fn=function(){toast('✓ Code copié : '+code);};
   if(navigator.clipboard){navigator.clipboard.writeText(code).then(fn).catch(function(){fallback(code,fn);});}
@@ -592,15 +649,12 @@ function fallback(code,cb){
   try{document.execCommand('copy');cb();}catch(e){toast('Code : '+code);}
   document.body.removeChild(t);
 }
-
-/* ══ TOAST ══ */
 function toast(msg){
   var t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2400);
 }
 
-/* ══ SUPABASE ══ */
 function sbFetch(path,opts){
   var h={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
   if(opts&&opts.headers)Object.assign(h,opts.headers);
@@ -616,7 +670,6 @@ function addItem(it){return sbFetch('items',{method:'POST',body:JSON.stringify(i
 function updateItem(id,fields){return sbFetch('items?id=eq.'+id,{method:'PATCH',body:JSON.stringify(fields)}).then(function(){var i=ITEMS.findIndex(function(x){return x.id===id;});if(i!==-1)Object.assign(ITEMS[i],fields);render();updModStats();toast('✓ Sauvegardé');});}
 function deleteItem(id){return sbFetch('items?id=eq.'+id,{method:'DELETE'}).then(function(){ITEMS=ITEMS.filter(function(x){return x.id!==id;});render();updModStats();toast('✓ Supprimé');});}
 
-/* ══ THEMES ══ */
 function applyTheme(t){
   var th=THEMES[t]||THEMES.noir;
   Object.keys(THEMES).forEach(function(k){if(THEMES[k].cls)document.body.classList.remove(THEMES[k].cls);});
@@ -632,17 +685,11 @@ document.getElementById('themeBtn').addEventListener('click',function(e){e.stopP
 document.querySelectorAll('.theme-opt').forEach(function(el){el.addEventListener('click',function(e){e.stopPropagation();applyTheme(this.dataset.t);document.getElementById('themePanel').classList.remove('open');});});
 document.addEventListener('click',function(e){var p=document.getElementById('themePanel'),b=document.getElementById('themeBtn');if(!p.contains(e.target)&&!b.contains(e.target))p.classList.remove('open');});
 
-/* ══ IMAGE LOADING — PROXY FALLBACK ══
-   Problème : les images Shein/Hacoo bloquent les requêtes cross-origin.
-   Solution  : si le chargement direct échoue, on passe par wsrv.nl
-   qui est un proxy d'image open-source qui gère le CORS.
-*/
 var PROXIES=[
   function(u){return u;},
   function(u){return 'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w=600&output=jpg&maxage=7d';},
   function(u){return 'https://images.weserv.nl/?url='+encodeURIComponent(u.replace(/^https?:\/\//,''))+'&w=600&q=80';}
 ];
-
 function loadImgWithFallback(imgEl,rawUrl,onSuccess,onFail,idx){
   if(!rawUrl||!rawUrl.trim()){if(onFail)onFail();return;}
   idx=idx||0;
@@ -650,18 +697,10 @@ function loadImgWithFallback(imgEl,rawUrl,onSuccess,onFail,idx){
   var src=PROXIES[idx](rawUrl.trim());
   var t=new Image();
   t.crossOrigin='anonymous';
-  t.onload=function(){
-    imgEl.src=src;
-    imgEl.classList.add('img-ok');
-    if(onSuccess)onSuccess(idx);
-  };
-  t.onerror=function(){
-    loadImgWithFallback(imgEl,rawUrl,onSuccess,onFail,idx+1);
-  };
+  t.onload=function(){imgEl.src=src;imgEl.classList.add('img-ok');if(onSuccess)onSuccess(idx);};
+  t.onerror=function(){loadImgWithFallback(imgEl,rawUrl,onSuccess,onFail,idx+1);};
   t.src=src;
 }
-
-/* ══ MODAL IMAGE PREVIEW ══ */
 function bindImgPreview(inputId,wrapId,imgId,statusId){
   var input=document.getElementById(inputId);
   var wrap=document.getElementById(wrapId);
@@ -677,14 +716,8 @@ function bindImgPreview(inputId,wrapId,imgId,statusId){
     stat.className='img-status-bar loading';stat.textContent='Chargement...';
     timer=setTimeout(function(){
       loadImgWithFallback(img,url,
-        function(proxyIdx){
-          stat.className='img-status-bar ok';
-          stat.textContent=proxyIdx===0?'✓ Image OK (direct)':'✓ Image OK (via proxy)';
-        },
-        function(){
-          stat.className='img-status-bar fail';
-          stat.textContent='✗ Image inaccessible — essaie imgur ou hostimage';
-        }
+        function(pIdx){stat.className='img-status-bar ok';stat.textContent=pIdx===0?'✓ Image OK (direct)':'✓ Image OK (via proxy)';},
+        function(){stat.className='img-status-bar fail';stat.textContent='✗ Image inaccessible — essaie imgur';}
       );
     },600);
   });
@@ -692,7 +725,7 @@ function bindImgPreview(inputId,wrapId,imgId,statusId){
 bindImgPreview('mImg','mPrevWrap','mPrev','mImgSt');
 bindImgPreview('eImg','ePrevWrap','ePrev','eImgSt');
 
-/* ══ PIN ══ */
+/* PIN */
 function updDots(){for(var i=0;i<PIN_LEN;i++){var d=document.getElementById('pd'+i);if(d)d.classList.toggle('filled',i<pinBuf.length);}}
 function lockKeys(l){['0','1','2','3','4','5','6','7','8','9'].forEach(function(n){var k=document.getElementById('pk'+n);if(k){k.disabled=l;k.style.opacity=l?'.25':'1';k.style.cursor=l?'not-allowed':'pointer';}});}
 function openPin(){pinBuf='';updDots();document.getElementById('pinErr').textContent=pinLocked?'🔒 Accès bloqué':'';lockKeys(pinLocked);document.getElementById('pinBg').classList.add('open');}
@@ -721,19 +754,16 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='Backspace'){pinBuf=pinBuf.slice(0,-1);updDots();}
   else if(e.key==='Escape')closePin();
 });
-
-/* Logo triple tap */
 document.getElementById('logoBtn').addEventListener('click',function(){
   var now=Date.now();
   if(now-lastTap>1400)pinTaps=0;
   lastTap=now;pinTaps++;
   if(pinTaps>=3){pinTaps=0;if(em)openModPanel();else openPin();}
 });
-
 function enterMod(){em=true;window.__editing=true;document.body.classList.add('em');render();updModStats();toast('✓ Mode modérateur activé');}
 function exitMod(){em=false;window.__editing=false;document.body.classList.remove('em');closeModPanel();render();toast('Mode modérateur désactivé');}
 
-/* ══ MODERATOR PANEL ══ */
+/* MOD PANEL */
 function openModPanel(){
   updModStats();
   var s=getSocial();
@@ -747,39 +777,30 @@ function updModStats(){
   document.getElementById('mst1').textContent=ITEMS.filter(function(x){return x.cat==='hacoo';}).length;
   document.getElementById('mst2').textContent=ITEMS.filter(function(x){return x.cat==='shein';}).length;
   document.getElementById('mst3').textContent=ITEMS.filter(function(x){return x.link&&x.link.trim();}).length;
+  document.getElementById('mst4').textContent=ITEMS.filter(function(x){return x.gender==='femme';}).length;
+  document.getElementById('mst5').textContent=ITEMS.filter(function(x){return x.gender==='homme';}).length;
+  // hero stats
+  document.getElementById('statFemme').textContent=ITEMS.filter(function(x){return x.gender==='femme';}).length;
+  document.getElementById('statHomme').textContent=ITEMS.filter(function(x){return x.gender==='homme';}).length;
 }
 
 document.getElementById('modOpenBtn').addEventListener('click',openModPanel);
 document.getElementById('modClose').addEventListener('click',closeModPanel);
 document.getElementById('modOverlay').addEventListener('click',function(e){if(e.target===this)closeModPanel();});
 document.getElementById('modExitBtn').addEventListener('click',exitMod);
-
-document.getElementById('modAddBtn').addEventListener('click',function(){
-  closeModPanel();
-  document.getElementById('addBg').classList.add('open');
-  setTimeout(function(){document.getElementById('mName').focus();},80);
-});
-
-document.getElementById('modRefreshBtn').addEventListener('click',function(){
-  toast('🔄 Rafraîchissement...');
-  loadItems().then(function(){toast('✓ Données à jour');});
-});
-
+document.getElementById('modAddBtn').addEventListener('click',function(){closeModPanel();document.getElementById('addBg').classList.add('open');setTimeout(function(){document.getElementById('mName').focus();},80);});
+document.getElementById('modRefreshBtn').addEventListener('click',function(){toast('🔄 Rafraîchissement...');loadItems().then(function(){toast('✓ Données à jour');});});
 document.getElementById('modExportBtn').addEventListener('click',function(){
   var json=JSON.stringify(ITEMS,null,2);
   var blob=new Blob([json],{type:'application/json'});
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;
-  a.download='erdezz-finds-'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();URL.revokeObjectURL(url);
+  var a=document.createElement('a');a.href=url;a.download='erdezz-finds-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);
   toast('✓ Export téléchargé');
 });
-
 document.getElementById('modCheckImgBtn').addEventListener('click',function(){
   var sec=document.getElementById('modDiagSec');
   var content=document.getElementById('modDiagContent');
-  sec.style.display='block';
-  content.innerHTML='<span style="color:var(--gold)">Vérification en cours...</span>';
+  sec.style.display='block';content.innerHTML='<span style="color:var(--gold)">Vérification en cours...</span>';
   var withImg=ITEMS.filter(function(x){return x.img&&x.img.trim();});
   if(!withImg.length){content.innerHTML='Aucun article avec image.';return;}
   var results=[],done=0;
@@ -793,15 +814,12 @@ document.getElementById('modCheckImgBtn').addEventListener('click',function(){
       if(done===withImg.length){
         var ok=results.filter(function(r){return r.ok;}).length;
         var html='<div style="color:var(--text);margin-bottom:8px;font-weight:700;">'+ok+'/'+withImg.length+' images OK</div>';
-        results.forEach(function(r){
-          html+='<div style="padding:3px 0;border-bottom:1px solid var(--border)">'+(r.ok?'<span style="color:#00c850">✓</span>':'<span style="color:#ff5555">✗</span>')+' #'+r.id+' — '+r.name+'</div>';
-        });
+        results.forEach(function(r){html+='<div style="padding:3px 0;border-bottom:1px solid var(--border)">'+(r.ok?'<span style="color:#00c850">✓</span>':'<span style="color:#ff5555">✗</span>')+' #'+r.id+' — '+r.name+'</div>';});
         content.innerHTML=html;
       }
     }
   });
 });
-
 document.getElementById('modSaveLinks').addEventListener('click',function(){
   var d=document.getElementById('modDiscordInp').value.trim();
   var t=document.getElementById('modTelegramInp').value.trim();
@@ -813,13 +831,12 @@ document.getElementById('modSaveLinks').addEventListener('click',function(){
   toast('✓ Liens sauvegardés');
 });
 
-/* ══ SOCIAL ══ */
 function getSocial(){try{return JSON.parse(localStorage.getItem('ldf_social')||'{}');}catch(e){return {};}}
 function setSocial(o){try{localStorage.setItem('ldf_social',JSON.stringify(o));}catch(e){}}
 document.getElementById('discordBtn').addEventListener('click',function(e){if(window.__editing){e.preventDefault();openModPanel();}});
 document.getElementById('telegramBtn').addEventListener('click',function(e){if(window.__editing){e.preventDefault();openModPanel();}});
 
-/* ══ EDIT MODAL ══ */
+/* EDIT MODAL */
 function openEditModal(id){
   var it=ITEMS.find(function(x){return x.id===id;});if(!it)return;
   editingId=id;
@@ -828,7 +845,10 @@ function openEditModal(id){
   document.getElementById('eCat').value=it.cat||'hacoo';
   document.getElementById('ePrice').value=it.price||'';
   document.getElementById('eLink').value=it.link||'';
-  // Image
+  // gender
+  var g=it.gender||'mixte';
+  document.querySelectorAll('input[name="eGender"]').forEach(function(r){r.checked=r.value===g;});
+  // image
   var imgInput=document.getElementById('eImg');
   var wrap=document.getElementById('ePrevWrap');
   var img=document.getElementById('ePrev');
@@ -859,22 +879,25 @@ document.getElementById('editSubmit').addEventListener('click',function(){
   var price=parseFloat(document.getElementById('ePrice').value)||0;
   var img=document.getElementById('eImg').value.trim();
   var link=document.getElementById('eLink').value.trim();
+  var genderEl=document.querySelector('input[name="eGender"]:checked');
+  var gender=genderEl?genderEl.value:'mixte';
   if(!name){document.getElementById('eName').focus();return;}
   if(!brand){document.getElementById('eBrand').focus();return;}
   if(link&&!link.startsWith('http'))link='https://'+link;
   this.disabled=true;this.textContent='EN COURS...';
-  updateItem(editingId,{name:name,brand:brand,cat:cat,price:price,img:img,link:link})
+  updateItem(editingId,{name:name,brand:brand,cat:cat,price:price,img:img,link:link,gender:gender})
     .then(function(){closeEditModal();})
     .catch(function(){toast('Erreur');document.getElementById('editSubmit').disabled=false;document.getElementById('editSubmit').textContent='SAUVEGARDER →';});
 });
 
-/* ══ ADD MODAL ══ */
+/* ADD MODAL */
 function closeAddModal(){
   document.getElementById('addBg').classList.remove('open');
   ['mName','mBrand','mImg','mLink','mPrice'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('mPrevWrap').classList.remove('visible');
   document.getElementById('mPrev').src='';document.getElementById('mPrev').classList.remove('img-ok');
   document.getElementById('mCat').value='hacoo';
+  document.getElementById('mGenderM').checked=true;
   document.getElementById('addSubmit').disabled=false;document.getElementById('addSubmit').textContent='AJOUTER →';
 }
 document.getElementById('addFab').addEventListener('click',function(){document.getElementById('addBg').classList.add('open');setTimeout(function(){document.getElementById('mName').focus();},80);});
@@ -888,16 +911,18 @@ document.getElementById('addSubmit').addEventListener('click',function(){
   var price=parseFloat(document.getElementById('mPrice').value)||0;
   var img=document.getElementById('mImg').value.trim();
   var link=document.getElementById('mLink').value.trim();
+  var genderEl=document.querySelector('input[name="mGender"]:checked');
+  var gender=genderEl?genderEl.value:'mixte';
   if(!name){document.getElementById('mName').focus();return;}
   if(!brand){document.getElementById('mBrand').focus();return;}
   if(link&&!link.startsWith('http'))link='https://'+link;
   this.disabled=true;this.textContent='EN COURS...';
-  addItem({name:name,brand:brand,cat:cat,price:price,img:img,link:link})
+  addItem({name:name,brand:brand,cat:cat,price:price,img:img,link:link,gender:gender})
     .then(function(){closeAddModal();})
     .catch(function(){toast('Erreur');document.getElementById('addSubmit').disabled=false;document.getElementById('addSubmit').textContent='AJOUTER →';});
 });
 
-/* ══ RENDER ══ */
+/* RENDER */
 function escA(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function hl(s){if(!srch)return s;return s.replace(new RegExp('('+srch.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
 
@@ -905,8 +930,11 @@ function imgHtml(it){
   var icon=ICONS[it.cat]||'📦';
   var ph='<div class="img-ph"><div class="img-ph-icon">'+icon+'</div><div class="img-ph-brand">'+escA(it.brand)+'</div></div>';
   if(!it.img||!it.img.trim())return ph;
-  // data-rawsrc used by loadCardImages()
   return ph+'<img data-rawsrc="'+escA(it.img.trim())+'" alt="'+escA(it.name)+'">';
+}
+function genderTagHtml(g){
+  var g2=g||'mixte';
+  return '<div class="gender-tag '+escA(g2)+'">'+GENDER_ICONS[g2]+' '+GENDER_LABELS[g2]+'</div>';
 }
 
 function del(id){if(confirm('Supprimer cet article ?'))deleteItem(parseInt(id));}
@@ -915,6 +943,7 @@ function edit(id){openEditModal(parseInt(id));}
 function getData(){
   var list=ITEMS.slice();
   if(flt!=='all')list=list.filter(function(x){return x.cat===flt;});
+  if(gflt!=='all')list=list.filter(function(x){return (x.gender||'mixte')===gflt;});
   if(srch){var q=srch.toLowerCase();list=list.filter(function(x){return x.name.toLowerCase().indexOf(q)>=0||x.brand.toLowerCase().indexOf(q)>=0;});}
   if(srt==='pa')list.sort(function(a,b){return a.price-b.price;});
   else if(srt==='pd')list.sort(function(a,b){return b.price-a.price;});
@@ -927,41 +956,58 @@ function render(){
   document.getElementById('hcnt').textContent=ITEMS.length+' ITEMS';
   document.getElementById('fc').textContent=ITEMS.length+' articles';
   document.getElementById('statTotal').textContent=ITEMS.length;
+  document.getElementById('statFemme').textContent=ITEMS.filter(function(x){return x.gender==='femme';}).length;
+  document.getElementById('statHomme').textContent=ITEMS.filter(function(x){return x.gender==='homme';}).length;
   var main=document.getElementById('main');
   if(!list.length){
     var msg=srch?'Aucun résultat pour "'+srch+'"':(em?'Clique sur + AJOUTER pour commencer':'Aucun article pour le moment');
     main.innerHTML='<div class="empty"><div class="empty-icon">📦</div>'+msg+'</div>';
     return;
   }
+
+  /* Group by cat then by gender inside */
   var grp={};
-  list.forEach(function(x){if(!grp[x.cat])grp[x.cat]=[];grp[x.cat].push(x);});
+  list.forEach(function(x){if(!grp[x.cat])grp[x.cat]={};var g=x.gender||'mixte';if(!grp[x.cat][g])grp[x.cat][g]=[];grp[x.cat][g].push(x);});
+
   var html='',n=0;
   ['hacoo','shein'].forEach(function(cat){
     if(!grp[cat])return;
-    var its=grp[cat];
-    html+='<div class="section-head"><div class="section-icon">'+ICONS[cat]+'</div><div class="section-name">'+CATS[cat]+'</div><div class="section-line"></div><div class="section-count">'+its.length+' pcs</div></div>';
-    html+='<div class="grid">';
-    its.forEach(function(it){
-      n++;
-      var linked=!!(it.link&&it.link.trim());var id=it.id;
-      var fn=linked?'if(!window.__editing)window.open(\''+escA(it.link)+'\',\'_blank\')':'';
-      html+='<div class="card'+(linked?'':' no-link')+'" onclick="'+fn+'">';
-      html+='<div class="card-badge">'+escA(it.cat)+'</div>';
-      if(em){html+='<div class="card-actions"><button class="act-btn act-edit" onclick="event.stopPropagation();edit('+id+')">✏ EDIT</button><button class="act-btn act-del" onclick="event.stopPropagation();del('+id+')">✕ DEL</button></div>';}
-      html+='<div class="card-img">'+imgHtml(it)+'</div>';
-      html+='<div class="card-body"><div class="card-meta"><div class="card-brand">'+hl(escA(it.brand))+'</div><div class="card-num">#'+String(n).padStart(2,'0')+'</div></div>';
-      html+='<div class="card-name">'+hl(escA(it.name))+'</div>';
-      html+='<div class="card-footer"><div class="card-price"><sup>USD</sup>$'+Number(it.price).toFixed(0)+'</div><div class="card-cta '+(linked?'live':'dead')+'">'+(linked?'SHOP →':'NO LINK')+'</div></div>';
-      html+='</div></div>';
+    var catItems=list.filter(function(x){return x.cat===cat;});
+    html+='<div class="section-head"><div class="section-icon">'+ICONS[cat]+'</div><div class="section-name">'+CATS[cat]+'</div><div class="section-line"></div><div class="section-count">'+catItems.length+' pcs</div></div>';
+
+    // Show gender sub-sections only if multiple genders present OR no gender filter
+    var genders=['femme','homme','mixte'];
+    var hasMultiple=genders.filter(function(g){return grp[cat][g]&&grp[cat][g].length;}).length>1;
+
+    genders.forEach(function(g){
+      if(!grp[cat][g]||!grp[cat][g].length)return;
+      var its=grp[cat][g];
+      if(hasMultiple){
+        html+='<div class="gender-head"><div class="gender-head-dot '+g+'"></div><div class="gender-head-name '+g+'">'+GENDER_LABELS[g]+'</div><div class="gender-head-line '+g+'"></div><div class="gender-head-cnt">'+its.length+' pcs</div></div>';
+      }
+      html+='<div class="grid">';
+      its.forEach(function(it){
+        n++;
+        var linked=!!(it.link&&it.link.trim());var id=it.id;
+        var itGender=it.gender||'mixte';
+        var fn=linked?'if(!window.__editing)window.open(\''+escA(it.link)+'\',\'_blank\')':'';
+        html+='<div class="card is-'+escA(itGender)+(linked?'':' no-link')+'" onclick="'+fn+'">';
+        html+=genderTagHtml(itGender);
+        html+='<div class="card-badge">'+escA(it.cat)+'</div>';
+        if(em){html+='<div class="card-actions"><button class="act-btn act-edit" onclick="event.stopPropagation();edit('+id+')">✏ EDIT</button><button class="act-btn act-del" onclick="event.stopPropagation();del('+id+')">✕ DEL</button></div>';}
+        html+='<div class="card-img">'+imgHtml(it)+'</div>';
+        html+='<div class="card-body"><div class="card-meta"><div class="card-brand">'+hl(escA(it.brand))+'</div><div class="card-num">#'+String(n).padStart(2,'0')+'</div></div>';
+        html+='<div class="card-name">'+hl(escA(it.name))+'</div>';
+        html+='<div class="card-footer"><div class="card-price"><sup>USD</sup>$'+Number(it.price).toFixed(0)+'</div><div class="card-cta '+(linked?'live':'dead')+'">'+(linked?'SHOP →':'NO LINK')+'</div></div>';
+        html+='</div></div>';
+      });
+      html+='</div>';
     });
-    html+='</div>';
   });
   main.innerHTML=html;
-  // Load images after DOM is updated
   setTimeout(loadCardImages,0);
 }
 
-/* Load card images with proxy fallback */
 function loadCardImages(){
   var imgs=document.querySelectorAll('.card-img img[data-rawsrc]');
   imgs.forEach(function(img){
@@ -971,17 +1017,32 @@ function loadCardImages(){
   });
 }
 
-/* ══ CONTROLS ══ */
+/* CONTROLS */
 document.getElementById('srch').addEventListener('input',function(e){srch=e.target.value.trim();render();});
 document.getElementById('srt').addEventListener('change',function(e){srt=e.target.value;render();});
-document.querySelectorAll('.filter-btn').forEach(function(b){
+
+/* Source filter buttons */
+document.querySelectorAll('.filter-btn[data-c]').forEach(function(b){
   b.addEventListener('click',function(){
-    document.querySelectorAll('.filter-btn').forEach(function(x){x.classList.remove('on');});
+    document.querySelectorAll('.filter-btn[data-c]').forEach(function(x){x.classList.remove('on');});
     b.classList.add('on');flt=b.dataset.c;render();
   });
 });
 
-/* ══ INIT ══ */
+/* Gender filter buttons */
+document.querySelectorAll('.filter-btn[data-g]').forEach(function(b){
+  b.addEventListener('click',function(){
+    if(b.classList.contains('on')){
+      b.classList.remove('on');gflt='all';
+    } else {
+      document.querySelectorAll('.filter-btn[data-g]').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');gflt=b.dataset.g;
+    }
+    render();
+  });
+});
+
+/* INIT */
 (function(){
   var s=getSocial();
   if(s.discord)document.getElementById('discordBtn').href=s.discord;
